@@ -25,141 +25,128 @@ import groovy.json.JsonSlurper
 
 
 public class ações {
-	
+
 	@Keyword
 	def RealizarRequisição(caminhoObjeto){
-		
+
 		def requisição = WS.sendRequest(findTestObject(caminhoObjeto))
-		
+
 		def codretorno = requisição.getStatusCode()
 		GlobalVariable.statusCodigoRetorno = codretorno
 		KeywordUtil.markWarning("Status Code é igual a " + GlobalVariable.statusCodigoRetorno)
-		
+
 		def retorno = requisição.getResponseText()
 		def xmlNode
-		xmlNode = new XmlSlurper().parseText(retorno) 
+		xmlNode = new XmlSlurper().parseText(retorno)
 		GlobalVariable.retornoRequisicao = xmlNode
 		KeywordUtil.markWarning("Get do texto dentro do body do retorno da requisição " + GlobalVariable.retornoRequisicao)
-		
 	}
-	
+
 	@Keyword
 	def VerificarRetornoStatusCode(text){
-		
-		if(text == GlobalVariable.statusCodigoRetorno){
-			
-			KeywordUtil.markPassed("Passou: Retornou o status code esperado como " + text)
-					
-		} else {
-		
-			KeywordUtil.markFailedAndStop("Falhou: Não retorno o status code esperado como " + text + ". Retornou o status code como " + GlobalVariable.statusCodigoRetorno)
-		} 
 
+		if(text == GlobalVariable.statusCodigoRetorno){
+
+			KeywordUtil.markPassed("Passou: Retornou o status code esperado como " + text)
+		} else {
+
+			KeywordUtil.markFailedAndStop("Falhou: Não retorno o status code esperado como " + text + ". Retornou o status code como " + GlobalVariable.statusCodigoRetorno)
+		}
 	}
-	
-	
+
+
 	@Keyword
 	def VerificarCodigoPromoção(text){
-		
+
 		def var = GlobalVariable.retornoRequisicao.beneficioPromocao.codigoPromocao.text()
-		
+
 		if(text == var){
-			
+
 			KeywordUtil.markPassed("Passou: Retornou o codigoPromocao esperado como " + text)
 			
-					
 		} else {
-		
-			KeywordUtil.markFailed("Falhou: Não retorno o codigoPromocao esperado como " + text + ". Retornou o codigoPromocao como " + var)
-		} 
 
+			KeywordUtil.markFailed("Falhou: Não retorno o codigoPromocao esperado como " + text + ". Retornou o codigoPromocao como " + var)
+		}
 	}
-	
+
 	@Keyword
 	def VerificarDescontoValorTotal(text){
-		
+
 		def var2 = ConverterInteiroParaString(text)
-			
+
 		def var = GlobalVariable.retornoRequisicao.beneficioPromocao.descontoValorTotal.text()
-		
+
 		if(var2 == var){
-			
+
 			KeywordUtil.markPassed("Passou: Retornou o descontoValorTotal esperado como " + var2)
 			
-					
 		} else {
-		
+
 			KeywordUtil.markFailed("Falhou: Não retorno o descontoValorTotal esperado como " + var2 + ". Retornou o codigoPromocao como " + var)
 		}
-
 	}
-	
-	
+
+
 	@Keyword
 	def ConverterInteiroParaString(text){
-		
+
 		String var2 = text
 		return var2
-		
 	}
-	
-	
+
+
 	@Keyword
 	def VerificarNomePromocao(text){
-		
+
 		def var = GlobalVariable.retornoRequisicao.beneficioPromocao.nomePromocao.text()
-		
+
 		if(text == var){
-			
+
 			KeywordUtil.markPassed("Passou: Retornou o nomePromocao esperado como " + text)
-			
-					
 		} else {
-		
+
 			KeywordUtil.markFailed("Falhou: Não retorno o nomePromocao esperado como " + text + ". Retornou o nomePromocao como " + var)
 		}
-
 	}
-	
+
 	@Keyword
 	def VerificarCódigoProduto(text){
-		
+
 		def var2 = ConverterInteiroParaString(text)
-		
+
 		def var = GlobalVariable.retornoRequisicao.beneficioPromocao.produtos.codigo.text()
-		
+
 		if(var2 == var){
-			
+
 			KeywordUtil.markPassed("Passou: Retornou o codigoProduto esperado como " + var2)
-			
-					
 		} else {
-		
+
 			KeywordUtil.markFailed("Falhou: Não retorno o codigoProduto esperado como " + var2 + ". Retornou o codigoProduto como " + var)
 		}
+	}
 
+	@Keyword
+	def VerificarDesconto(text){
+
+		def var2 = ConverterInteiroParaString(text)
+
+		def var = GlobalVariable.retornoRequisicao.beneficioPromocao.produtos.desconto.text()
+
+		if(var2 == var){
+
+			KeywordUtil.markPassed("Passou: Retornou o desconto esperado como " + var2)
+		} else {
+
+			KeywordUtil.markFailed("Falhou: Não retorno o desconto esperado como " + var2 + ". Retornou o desconto como " + var)
+		}
 	}
 	
 	@Keyword
-	def VerificarDesconto(text){
+	def ExibeLogExecução(text, text2){
 		
-		def var2 = ConverterInteiroParaString(text)
+		KeywordUtil.markWarning("Salvou na variável global " +text +": " + text2)
 		
-		def var = GlobalVariable.retornoRequisicao.beneficioPromocao.produtos.desconto.text()
-		
-		if(var2 == var){
-			
-			KeywordUtil.markPassed("Passou: Retornou o desconto esperado como " + var2)
-			
-					
-		} else {
-		
-			KeywordUtil.markFailed("Falhou: Não retorno o desconto esperado como " + var2 + ". Retornou o desconto como " + var)
-		}
-
 	}
-	
-	
-	
 	
 }
